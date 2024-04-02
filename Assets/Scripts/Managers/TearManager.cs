@@ -66,8 +66,8 @@ public class TearManager : Singleton<TearManager>
             {
                 foreach (Tear tear in tearList)
                 {
-                    tear.Pop();
                     tearsInGame.Remove(tear);
+                    tear.Pop();
                 }
                 tearDictionary.Remove(answerFloat);
             }
@@ -119,7 +119,7 @@ public class TearManager : Singleton<TearManager>
                 break;
             case OperationTypes.Multiplication:
                 result = firstNumber * secondNumber;
-                operationString = "*";
+                operationString = "x";
                 break;
             case OperationTypes.Division:
                 secondNumber = Random.Range(1, currentDifficulty.rangeMaxNumber);
@@ -162,10 +162,10 @@ public class TearManager : Singleton<TearManager>
     {
         for (int i = tearsInGame.Count - 1; i >= 0; i--)
         {
-            EventManager<int>.Instance.TriggerEvent("onTearPopped", tearsInGame[i].score);
-            TearFactory.Instance.ReturnObject(tearsInGame[i].gameObject);
+            Tear tear = tearsInGame[i];
+            tearsInGame.Remove(tear);
+            tear.Pop();
         }
-        tearsInGame.Clear();
         tearDictionary.Clear();
     }
 }

@@ -458,6 +458,7 @@ MonoBehaviour:
   firstNumber: {fileID: 8757414480823032318}
   secondNumber: {fileID: 6764851101066063682}
   operand: {fileID: 6144001672960421611}
+  pointsText: {fileID: -8316555661138051124, guid: 7bd1d87da90e5c54bba59b082f0744a6, type: 3}
   score: 0
 --- !u!1 &9077629961018047921
 GameObject:

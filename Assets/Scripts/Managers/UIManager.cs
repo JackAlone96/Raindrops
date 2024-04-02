@@ -9,6 +9,8 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private TMP_InputField inputText;
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI timeText;
+    [SerializeField] private Canvas canvas;
+    [SerializeField] private PointsText pointsText;
     private bool isGamePaused = false;
     int totalScore = 0;
 
@@ -16,12 +18,14 @@ public class UIManager : Singleton<UIManager>
     {
         EventManager<bool>.Instance.StartListening("onGamePaused", PauseGame);
         EventManager<int>.Instance.StartListening("onTearPopped", ManageScore);
+        EventManager<ScriptableGameDifficulty>.Instance.StartListening("onDifficultyChanged", DifficultyText);
     }
 
     private void OnDisable()
     {
         EventManager<bool>.Instance.StopListening("onGamePaused", PauseGame);
         EventManager<int>.Instance.StopListening("onTearPopped", ManageScore);
+        EventManager<ScriptableGameDifficulty>.Instance.StopListening("onDifficultyChanged", DifficultyText);
     }
 
     // Start is called before the first frame update
@@ -67,5 +71,13 @@ public class UIManager : Singleton<UIManager>
     {
         totalScore += score;
         scoreText.text = "Score: " + totalScore.ToString();
+        
+        
+    }
+
+    private void DifficultyText(ScriptableGameDifficulty scriptableGameDifficulty)
+    {
+        if (scriptableGameDifficulty.levelNumber <= 1) return;
+        Instantiate(pointsText, scoreText.transform.position + new Vector3(-20, 40), Quaternion.identity, canvas.transform).Init("LEVEL UP!");
     }
 }

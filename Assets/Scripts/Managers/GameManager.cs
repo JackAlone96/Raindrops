@@ -10,6 +10,7 @@ public class GameManager : Singleton<GameManager>
     public GameState currentState { get; private set; }
 
     [SerializeField] private GameObject sea;
+    [SerializeField] private PointsText messageText;
 
     private ScriptableGameDifficulty[] gameDifficulties;
     private int difficultyIndex = 0;

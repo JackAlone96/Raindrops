@@ -10,4 +10,5 @@ public class ScriptableGameDifficulty : ScriptableObject
     public float tearSpeed;
     public int tearPoints;
     public int scoreToClearLevel;
+    public int levelNumber;
 }

@@ -8,6 +8,7 @@ public class Tear : MonoBehaviour
     [SerializeField] private TextMeshPro firstNumber;
     [SerializeField] private TextMeshPro secondNumber;
     [SerializeField] private TextMeshPro operand;
+    [SerializeField] private PointsText pointsText;
     private float speed;
     public int score;
     private float TearHalfHeight;
@@ -47,6 +48,8 @@ public class Tear : MonoBehaviour
     {
         EventManager<int>.Instance.TriggerEvent("onTearPopped", score);
         TearFactory.Instance.ReturnObject(gameObject);
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+        Instantiate(pointsText, screenPos, pointsText.gameObject.transform.rotation, FindFirstObjectByType<Canvas>().transform).Init("+ " + score);
     }
 
     private bool CheckCollision()

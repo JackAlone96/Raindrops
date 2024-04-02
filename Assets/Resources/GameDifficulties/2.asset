@@ -17,3 +17,4 @@ MonoBehaviour:
   tearSpeed: 1.2
   tearPoints: 15
   scoreToClearLevel: 120
+  levelNumber: 2

@@ -629,6 +629,8 @@ MonoBehaviour:
   inputText: {fileID: 1924193724}
   scoreText: {fileID: 216569586}
   timeText: {fileID: 1189611967}
+  canvas: {fileID: 747851286}
+  pointsText: {fileID: -8316555661138051124, guid: 7bd1d87da90e5c54bba59b082f0744a6, type: 3}
 --- !u!1 &923077900
 GameObject:
   m_ObjectHideFlags: 0
@@ -659,7 +661,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnRate: 4
-  goldenTearSpawnProbability: 2
+  goldenTearSpawnProbability: 5
 --- !u!4 &923077902
 Transform:
   m_ObjectHideFlags: 0
