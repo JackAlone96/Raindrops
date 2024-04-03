@@ -18,3 +18,4 @@ MonoBehaviour:
   tearPoints: 20
   scoreToClearLevel: 200
   levelNumber: 3
+  spawnInterval: 2

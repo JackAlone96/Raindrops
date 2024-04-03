@@ -241,6 +241,18 @@ public static class Helper
         }
     }
 
+    public static int GenerateRandomBinaryNumber(int lenght)
+    {
+        string binaryString = "";
+        for (int i = 0; i < lenght; i++)
+        {
+            int x = Random.Range(0, 2);
+            binaryString += x;
+        }
+
+        return int.Parse(binaryString);
+    }
+
     public static IEnumerator WaitCoroutine(float _time)
     {
         yield return new WaitForSeconds(_time);

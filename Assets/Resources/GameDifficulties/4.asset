@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a43f16a245665d48a829b91214a8162, type: 3}
   m_Name: 4
   m_EditorClassIdentifier: 
-  rangeMaxNumber: 16
+  rangeMaxNumber: 11
   operationMaxNumber: 4
   tearSpeed: 2
   tearPoints: 30
   scoreToClearLevel: 600
   levelNumber: 4
+  spawnInterval: 2

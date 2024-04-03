@@ -50,6 +50,28 @@ public class Tear : MonoBehaviour
     {
         firstNumber.text = FirstNumber.ToString();
         secondNumber.text = SecondNumber.ToString();
+        if ((Operand == "&" || Operand == "|") && (firstNumber.text.Length < 3 || secondNumber.text.Length < 3))
+        {
+            if (firstNumber.text.Length < 3)
+            {
+                string stringToAdd = "";
+                for (int i = 0; i < 3 - firstNumber.text.Length; i++)
+                {
+                    stringToAdd += "0";
+                }
+                firstNumber.text = stringToAdd + firstNumber.text;
+            }
+
+            if (secondNumber.text.Length < 3)
+            {
+                string stringToAdd = "";
+                for (int i = 0; i < 3 -secondNumber.text.Length; i++)
+                {
+                    stringToAdd += "0";
+                }
+                secondNumber.text = stringToAdd + secondNumber.text;
+            }
+        }
         operand.text = Operand;
         speed = Speed;
         score = Score;

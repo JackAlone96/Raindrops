@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Timers;
 using UnityEngine;
+using System;
 
 public class TearManager : Singleton<TearManager>
 {
-    enum OperationTypes { Addition = 0, Multiplication = 1, Substraction = 2, Division = 3};
+    enum OperationTypes { Addition = 0, Multiplication = 1, Substraction = 2, Division = 3, And = 4, Or = 5};
 
     public float spawnRate;
     [Range(1, 100)]
@@ -79,15 +80,16 @@ public class TearManager : Singleton<TearManager>
     private void ChangeDifficulty(ScriptableGameDifficulty newDifficulty)
     {
         currentDifficulty = newDifficulty;
+        spawnRate = currentDifficulty.spawnInterval;
     }
 
     private Tear SpawnTear()
     {
-        float spawnXPos = Random.Range(SpawnArea.x, SpawnArea.y);
+        float spawnXPos = UnityEngine.Random.Range(SpawnArea.x, SpawnArea.y);
         Vector3 spawnPos = new Vector3(spawnXPos, SpawnArea.z, 0f);
         Tear tear;
 
-        if (Random.Range(1,101) <= goldenTearSpawnProbability)
+        if (UnityEngine.Random.Range(1,101) <= goldenTearSpawnProbability)
         {
             tear = TearFactory.Instance.CreateObject("GoldenTearPrefab", spawnPos, Quaternion.identity).GetComponent<Tear>();
             return tear;
@@ -100,10 +102,10 @@ public class TearManager : Singleton<TearManager>
 
     private void InitializeTear(Tear tear)
     {
-        int firstNumber = Random.Range(0, currentDifficulty.rangeMaxNumber);
-        int secondNumber = Random.Range(0, currentDifficulty.rangeMaxNumber);
+        int firstNumber = UnityEngine.Random.Range(0, currentDifficulty.rangeMaxNumber);
+        int secondNumber = UnityEngine.Random.Range(0, currentDifficulty.rangeMaxNumber);
         int result = 0;
-        OperationTypes operation = (OperationTypes)Random.Range(0, currentDifficulty.operationMaxNumber);
+        OperationTypes operation = (OperationTypes)UnityEngine.Random.Range(0, currentDifficulty.operationMaxNumber);
         string operationString = "+";
 
         // Calculate the result of the operation
@@ -114,8 +116,8 @@ public class TearManager : Singleton<TearManager>
                 operationString = "+";
                 break;
             case OperationTypes.Substraction:
-                firstNumber = Random.Range(0, currentDifficulty.rangeMaxNumber);
-                secondNumber = Random.Range(0, firstNumber);
+                firstNumber = UnityEngine.Random.Range(0, currentDifficulty.rangeMaxNumber);
+                secondNumber = UnityEngine.Random.Range(0, firstNumber);
                 result = firstNumber - secondNumber;
                 operationString = "-";
                 break;
@@ -124,10 +126,28 @@ public class TearManager : Singleton<TearManager>
                 operationString = "x";
                 break;
             case OperationTypes.Division:
-                secondNumber = Random.Range(1, currentDifficulty.rangeMaxNumber);
-                firstNumber = Random.Range(1, currentDifficulty.rangeMaxNumber) * secondNumber;
+                secondNumber = UnityEngine.Random.Range(1, currentDifficulty.rangeMaxNumber);
+                firstNumber = UnityEngine.Random.Range(1, currentDifficulty.rangeMaxNumber) * secondNumber;
                 result = firstNumber / secondNumber;
                 operationString = "/";
+                break;
+            case OperationTypes.And:
+                firstNumber = Helper.GenerateRandomBinaryNumber(3);
+                secondNumber = Helper.GenerateRandomBinaryNumber(3);
+
+                int firstNumberDecimal = Convert.ToInt32(firstNumber.ToString(), 2);
+                int secondNumberDecimal = Convert.ToInt32(secondNumber.ToString(), 2);
+                operationString = "&";
+                result = int.Parse(Convert.ToString(firstNumberDecimal & secondNumberDecimal, 2));
+                break;
+            case OperationTypes.Or:
+                firstNumber = Helper.GenerateRandomBinaryNumber(3);
+                secondNumber = Helper.GenerateRandomBinaryNumber(3);
+
+                firstNumberDecimal = Convert.ToInt32(firstNumber.ToString(), 2);
+                secondNumberDecimal = Convert.ToInt32(secondNumber.ToString(), 2);
+                operationString = "|";
+                result = int.Parse(Convert.ToString(firstNumberDecimal | secondNumberDecimal, 2));
                 break;
         }
 
