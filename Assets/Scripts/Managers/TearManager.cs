@@ -24,12 +24,14 @@ public class TearManager : Singleton<TearManager>
     {
         EventManager<string>.Instance.StartListening("onInput", CheckAnswer);
         EventManager<ScriptableGameDifficulty>.Instance.StartListening("onDifficultyChanged", ChangeDifficulty);
+        EventManager<Tear>.Instance.StartListening("onTearLanded", TearLanded);
     }
 
     private void OnDisable()
     {
         EventManager<string>.Instance.StopListening("onInput", CheckAnswer);
         EventManager<ScriptableGameDifficulty>.Instance.StopListening("onDifficultyChanged", ChangeDifficulty);
+        EventManager<Tear>.Instance.StopListening("onTearLanded", TearLanded);
     }
 
     // Start is called before the first frame update
@@ -129,7 +131,7 @@ public class TearManager : Singleton<TearManager>
                 break;
         }
 
-        tear.Init(firstNumber, secondNumber, operationString, currentDifficulty.tearSpeed, currentDifficulty.tearPoints);
+        tear.Init(firstNumber, secondNumber, operationString, currentDifficulty.tearSpeed, currentDifficulty.tearPoints, result);
         tearsInGame.Add(tear);
 
         // Insert the tear in the dictionary checking if it was already present or not
@@ -167,5 +169,13 @@ public class TearManager : Singleton<TearManager>
             tear.Pop();
         }
         tearDictionary.Clear();
+    }
+
+    private void TearLanded(Tear tear)
+    {
+        tearsInGame.Remove(tear);
+        List<Tear> tears;
+        tearDictionary.TryGetValue(tear.result, out tears);
+        tears.Remove(tear);
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -10,7 +11,7 @@ public class GameManager : Singleton<GameManager>
     public GameState currentState { get; private set; }
 
     [SerializeField] private GameObject sea;
-    [SerializeField] private PointsText messageText;
+    [SerializeField] private float seaIncrement = 0.5f;
 
     private ScriptableGameDifficulty[] gameDifficulties;
     private int difficultyIndex = 0;
@@ -18,6 +19,7 @@ public class GameManager : Singleton<GameManager>
     private bool isGamePaused = false;
     private int totalScore = 0;
     private int partialScore = 0;
+    private int bestScore = 0;
     private float gameTime = 0;
     public TimeSpan gameTimeSpan;
 
@@ -27,14 +29,18 @@ public class GameManager : Singleton<GameManager>
     {
         EventManager<bool>.Instance.StartListening("onGamePaused", PauseGame);
         EventManager<int>.Instance.StartListening("onTearPopped", ManageDifficulty);
-        EventManager<float>.Instance.StartListening("onTearLanded", ManageSea);
+        EventManager<Tear>.Instance.StartListening("onTearLanded", ManageSea);
+        EventManager<bool>.Instance.StartListening("onFadeOut", RestarGame);
+        EventManager<bool>.Instance.StartListening("onGameStarted", StartGame);
     }
 
     private void OnDisable()
     {
         EventManager<bool>.Instance.StopListening("onGamePaused", PauseGame);
         EventManager<int>.Instance.StopListening("onTearPopped", ManageDifficulty);
-        EventManager<float>.Instance.StopListening("onTearLanded", ManageSea);
+        EventManager<Tear>.Instance.StopListening("onTearLanded", ManageSea);
+        EventManager<bool>.Instance.StopListening("onFadeOut", RestarGame);
+        EventManager<bool>.Instance.StopListening("onGameStarted", StartGame);
     }
 
     // Start is called before the first frame update
@@ -45,7 +51,13 @@ public class GameManager : Singleton<GameManager>
         EventManager<ScriptableGameDifficulty>.Instance.TriggerEvent("onDifficultyChanged", gameDifficulties[difficultyIndex]);
 
         // Set the current state
-        currentState = GameState.PLAYING;
+        currentState = GameState.MAIN_MENU;
+
+        // Start animation
+        UIManager.Instance.StartFadeInMainMenu();
+
+        // Load best score
+        bestScore = DataManager.Instance.LoadBestScore();
     }
 
     // Update is called once per frame
@@ -101,13 +113,21 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    private void ManageSea(float seaLevel)
+    private void ManageSea(Tear tear)
     {
-        Vector2 newPos = sea.transform.position + new Vector3(0, seaLevel, 0);
+        Vector2 newPos = sea.transform.position + new Vector3(0, seaIncrement, 0);
 
         if ((newPos.y + sea.GetComponent<SpriteRenderer>().bounds.extents.y) >= (Camera.main.transform.position.y + Camera.main.orthographicSize))
         {
             currentState = GameState.GAMEOVER;
+            if (totalScore > bestScore)
+            {
+                DataManager.Instance.SaveBestScore(totalScore);
+            }
+            EventManager<int>.Instance.TriggerEvent("onGameover", bestScore);
+
+
+
             return;
         }
 
@@ -129,5 +149,15 @@ public class GameManager : Singleton<GameManager>
         }
         transform.position = newPos;
         seaCoroutine = null;
+    }
+
+    public void RestarGame(bool restart)
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void StartGame(bool start)
+    {
+        currentState = GameState.PLAYING;
     }
 }

@@ -12,6 +12,17 @@ public class Tear : MonoBehaviour
     private float speed;
     public int score;
     private float TearHalfHeight;
+    public int result;
+
+    private void OnEnable()
+    {
+        EventManager<bool>.Instance.StartListening("onPausePanel", HideText);
+    }
+
+    private void OnDisable()
+    {
+        EventManager<bool>.Instance.StopListening("onPausePanel", HideText);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -35,13 +46,14 @@ public class Tear : MonoBehaviour
         }
     }
 
-    public void Init(int FirstNumber, int SecondNumber, string Operand, float Speed, int Score)
+    public void Init(int FirstNumber, int SecondNumber, string Operand, float Speed, int Score, int Result)
     {
         firstNumber.text = FirstNumber.ToString();
         secondNumber.text = SecondNumber.ToString();
         operand.text = Operand;
         speed = Speed;
         score = Score;
+        result = Result;
     }
 
     virtual public void Pop()
@@ -62,7 +74,16 @@ public class Tear : MonoBehaviour
 
     private void LoseLife()
     {
-        EventManager<float>.Instance.TriggerEvent("onTearLanded", 0.5f);
+        EventManager<Tear>.Instance.TriggerEvent("onTearLanded", this);
         TearFactory.Instance.ReturnObject(gameObject);
+    }
+
+    private void HideText(bool hide)
+    {
+        float alpha = hide == true ? 0 : 1;
+
+        firstNumber.alpha = alpha;
+        secondNumber.alpha = alpha;
+        operand.alpha = alpha;
     }
 }

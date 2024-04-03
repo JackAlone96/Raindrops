@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
+using UnityEngine.UI;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -10,13 +11,20 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI timeText;
     [SerializeField] private Canvas canvas;
+    [SerializeField] private GameObject gameplayPanel;
+    [SerializeField] private GameObject mainmenuPanel;
+    [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject gameoverPanel;
     [SerializeField] private PointsText pointsText;
+    [SerializeField] private Image fadeoutPanel;
     private bool isGamePaused = false;
     int totalScore = 0;
 
     private void OnEnable()
     {
         EventManager<bool>.Instance.StartListening("onGamePaused", PauseGame);
+        EventManager<bool>.Instance.StartListening("onGameStarted", SelectInputField);
+        EventManager<int>.Instance.StartListening("onGameover", Gameover);
         EventManager<int>.Instance.StartListening("onTearPopped", ManageScore);
         EventManager<ScriptableGameDifficulty>.Instance.StartListening("onDifficultyChanged", DifficultyText);
     }
@@ -24,6 +32,8 @@ public class UIManager : Singleton<UIManager>
     private void OnDisable()
     {
         EventManager<bool>.Instance.StopListening("onGamePaused", PauseGame);
+        EventManager<bool>.Instance.StopListening("onGameStarted", SelectInputField);
+        EventManager<int>.Instance.StopListening("onGameover", Gameover);
         EventManager<int>.Instance.StopListening("onTearPopped", ManageScore);
         EventManager<ScriptableGameDifficulty>.Instance.StopListening("onDifficultyChanged", DifficultyText);
     }
@@ -50,6 +60,8 @@ public class UIManager : Singleton<UIManager>
         {
             inputText.text = "";
             inputText.DeactivateInputField();
+            pausePanel.SetActive(true);
+            pausePanel.GetComponent<PauseUI>().StartPopInAnimation();
         }
         else
         {
@@ -79,5 +91,50 @@ public class UIManager : Singleton<UIManager>
     {
         if (scriptableGameDifficulty.levelNumber <= 1) return;
         Instantiate(pointsText, scoreText.transform.position + new Vector3(-20, 40), Quaternion.identity, canvas.transform).Init("LEVEL UP!");
+    }
+
+    private void Gameover(int bestScore)
+    {
+        gameoverPanel.SetActive(true);
+        gameoverPanel.GetComponent<GameOverUI>().StartFadeInAnimation(bestScore, totalScore);
+    }
+
+    private void SelectInputField(bool select)
+    {
+        inputText.Select();
+    }
+
+    public void RestartGame()
+    {
+        fadeoutPanel.color = new Color(1, 1, 1, 0);
+        fadeoutPanel.gameObject.SetActive(true);
+        StartCoroutine(FadeOutCO());
+    }
+
+    public void StartFadeInMainMenu()
+    {
+        StartCoroutine(FadeInCO());
+    }
+
+    private IEnumerator FadeOutCO()
+    {
+        while (fadeoutPanel.color.a < 1)
+        {
+            float newAlpha = fadeoutPanel.color.a + Time.deltaTime;
+            fadeoutPanel.color = new Color(0, 0, 0, newAlpha);
+            yield return null;
+        }
+        EventManager<bool>.Instance.TriggerEvent("onFadeOut", true);
+    }
+
+    private IEnumerator FadeInCO()
+    {
+        while (fadeoutPanel.color.a > 0)
+        {
+            float newAlpha = fadeoutPanel.color.a - Time.deltaTime;
+            fadeoutPanel.color = new Color(0, 0, 0, newAlpha);
+            yield return null;
+        }
+        fadeoutPanel.gameObject.SetActive(false);
     }
 }
