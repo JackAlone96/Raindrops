@@ -142,16 +142,16 @@ public class EventManagerOneParam<T>
 }
 
 // WITH TWO PARAMETERS
-public class EventManagerTwoParams<T, A>
+public class EventManagerTwoParams<T1, T2>
 {
-    private static EventManagerTwoParams<T, A> instance;
-    public static EventManagerTwoParams<T, A> Instance
+    private static EventManagerTwoParams<T1, T2> instance;
+    public static EventManagerTwoParams<T1, T2> Instance
     {
         get
         {
             if (instance == null)
             {
-                instance = new EventManagerTwoParams<T, A>();
+                instance = new EventManagerTwoParams<T1, T2>();
 
                 instance.Init();
             }
@@ -159,7 +159,7 @@ public class EventManagerTwoParams<T, A>
         }
     }
 
-    private Dictionary<string, Action<T, A>> paramEventDictionary;
+    private Dictionary<string, Action<T1, T2>> paramEventDictionary;
 
     private EventManagerTwoParams() { }
 
@@ -167,13 +167,13 @@ public class EventManagerTwoParams<T, A>
     {
         if (paramEventDictionary == null)
         {
-            paramEventDictionary = new Dictionary<string, Action<T, A>>();
+            paramEventDictionary = new Dictionary<string, Action<T1, T2>>();
         }
     }
 
-    public void StartListening(string eventName, Action<T, A> listener)
+    public void StartListening(string eventName, Action<T1, T2> listener)
     {
-        Action<T, A> thisListener = null;
+        Action <T1, T2> thisListener = null;
 
         if (paramEventDictionary.ContainsKey(eventName))
         {
@@ -187,7 +187,7 @@ public class EventManagerTwoParams<T, A>
         }
     }
 
-    public void StopListening(string eventName, Action<T, A> listener)
+    public void StopListening(string eventName, Action<T1, T2> listener)
     {
         if (instance == null)
         {
@@ -200,7 +200,7 @@ public class EventManagerTwoParams<T, A>
         }
     }
 
-    public void TriggerEvent(string eventName, T dataOne, A dataTwo)
+    public void TriggerEvent(string eventName, T1 dataOne, T2 dataTwo)
     {
         if (paramEventDictionary.ContainsKey(eventName))
         {
