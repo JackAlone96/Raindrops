@@ -12,12 +12,12 @@ public class PauseUI : MonoBehaviour
 
     private void OnEnable()
     {
-        EventManager<bool>.Instance.StartListening("onGamePaused", StartPopOutAnimation);
+        EventManagerOneParam<bool>.Instance.StartListening("onGamePaused", StartPopOutAnimation);
     }
 
     private void OnDisable()
     {
-        EventManager<bool>.Instance.StopListening("onGamePaused", StartPopOutAnimation);
+        EventManagerOneParam<bool>.Instance.StopListening("onGamePaused", StartPopOutAnimation);
     }
 
     // Start is called before the first frame update
@@ -72,13 +72,13 @@ public class PauseUI : MonoBehaviour
         elapsedTime = 0;
         popOutCoroutine = null;
         transform.localScale = Vector3.zero;
-        EventManager<bool>.Instance.TriggerEvent("onPausePanel", false);
+        EventManagerOneParam<bool>.Instance.TriggerEvent("onPausePanel", false);
         gameObject.SetActive(false);
     }
 
     public void StartPopInAnimation()
     {
-        EventManager<bool>.Instance.TriggerEvent("onPausePanel", true);
+        EventManagerOneParam<bool>.Instance.TriggerEvent("onPausePanel", true);
         popInCoroutine = StartCoroutine(PopInCO());
     }
 

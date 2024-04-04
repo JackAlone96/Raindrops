@@ -19,7 +19,7 @@ public class InputController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P) && (GameManager.Instance.currentState == GameManager.GameState.PLAYING || GameManager.Instance.currentState == GameManager.GameState.PAUSE))
         {
             isGamePaused = isGamePaused == false ? true : false;
-            EventManager<bool>.Instance.TriggerEvent("onGamePaused", isGamePaused);
+            EventManagerOneParam<bool>.Instance.TriggerEvent("onGamePaused", isGamePaused);
         }
     }
 }

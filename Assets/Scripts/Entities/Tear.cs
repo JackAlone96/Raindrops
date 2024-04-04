@@ -16,12 +16,12 @@ public class Tear : MonoBehaviour
 
     private void OnEnable()
     {
-        EventManager<bool>.Instance.StartListening("onPausePanel", HideText);
+        EventManagerOneParam<bool>.Instance.StartListening("onPausePanel", HideText);
     }
 
     private void OnDisable()
     {
-        EventManager<bool>.Instance.StopListening("onPausePanel", HideText);
+        EventManagerOneParam<bool>.Instance.StopListening("onPausePanel", HideText);
     }
 
     // Start is called before the first frame update
@@ -80,7 +80,7 @@ public class Tear : MonoBehaviour
 
     virtual public void Pop()
     {
-        EventManager<int>.Instance.TriggerEvent("onTearPopped", score);
+        EventManagerOneParam<int>.Instance.TriggerEvent("onTearPopped", score);
         TearFactory.Instance.ReturnObject(gameObject);
         Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
         Instantiate(pointsText, screenPos, pointsText.gameObject.transform.rotation, FindFirstObjectByType<Canvas>().transform).Init("+ " + score);
@@ -96,7 +96,7 @@ public class Tear : MonoBehaviour
 
     private void LoseLife()
     {
-        EventManager<Tear>.Instance.TriggerEvent("onTearLanded", this);
+        EventManagerOneParam<Tear>.Instance.TriggerEvent("onTearLanded", this);
         TearFactory.Instance.ReturnObject(gameObject);
     }
 

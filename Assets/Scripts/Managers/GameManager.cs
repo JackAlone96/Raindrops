@@ -27,20 +27,20 @@ public class GameManager : Singleton<GameManager>
 
     private void OnEnable()
     {
-        EventManager<bool>.Instance.StartListening("onGamePaused", PauseGame);
-        EventManager<int>.Instance.StartListening("onTearPopped", ManageDifficulty);
-        EventManager<Tear>.Instance.StartListening("onTearLanded", ManageSea);
-        EventManager<bool>.Instance.StartListening("onFadeOut", RestarGame);
-        EventManager<bool>.Instance.StartListening("onGameStarted", StartGame);
+        EventManagerOneParam<bool>.Instance.StartListening("onGamePaused", PauseGame);
+        EventManagerOneParam<int>.Instance.StartListening("onTearPopped", ManageDifficulty);
+        EventManagerOneParam<Tear>.Instance.StartListening("onTearLanded", ManageSea);
+        EventManager.Instance.StartListening("onFadeOut", RestartGame);
+        EventManager.Instance.StartListening("onGameStarted", StartGame);
     }
 
     private void OnDisable()
     {
-        EventManager<bool>.Instance.StopListening("onGamePaused", PauseGame);
-        EventManager<int>.Instance.StopListening("onTearPopped", ManageDifficulty);
-        EventManager<Tear>.Instance.StopListening("onTearLanded", ManageSea);
-        EventManager<bool>.Instance.StopListening("onFadeOut", RestarGame);
-        EventManager<bool>.Instance.StopListening("onGameStarted", StartGame);
+        EventManagerOneParam<bool>.Instance.StopListening("onGamePaused", PauseGame);
+        EventManagerOneParam<int>.Instance.StopListening("onTearPopped", ManageDifficulty);
+        EventManagerOneParam<Tear>.Instance.StopListening("onTearLanded", ManageSea);
+        EventManager.Instance.StopListening("onFadeOut", RestartGame);
+        EventManager.Instance.StopListening("onGameStarted", StartGame);
     }
 
     // Start is called before the first frame update
@@ -48,7 +48,7 @@ public class GameManager : Singleton<GameManager>
     {
         // Get all the game difficulties and initialize the first one
         gameDifficulties = Resources.LoadAll<ScriptableGameDifficulty>("GameDifficulties");
-        EventManager<ScriptableGameDifficulty>.Instance.TriggerEvent("onDifficultyChanged", gameDifficulties[difficultyIndex]);
+        EventManagerOneParam<ScriptableGameDifficulty>.Instance.TriggerEvent("onDifficultyChanged", gameDifficulties[difficultyIndex]);
 
         // Set the current state
         currentState = GameState.MAIN_MENU;
@@ -105,10 +105,10 @@ public class GameManager : Singleton<GameManager>
         {
             if (partialScore >= gameDifficulties[difficultyIndex].scoreToClearLevel)
             {
-                Debug.Log("LEVEL UP at" + totalScore + " points with a " + partialScore + " base");
                 difficultyIndex++;
+                Debug.Log("LEVEL UP at " + totalScore + " points with a " + partialScore + " base\n" + "NEW LEVEL: " + gameDifficulties[difficultyIndex].levelNumber);
                 partialScore = 0;
-                EventManager<ScriptableGameDifficulty>.Instance.TriggerEvent("onDifficultyChanged", gameDifficulties[difficultyIndex]);
+                EventManagerOneParam<ScriptableGameDifficulty>.Instance.TriggerEvent("onDifficultyChanged", gameDifficulties[difficultyIndex]);
             }
         }
     }
@@ -124,7 +124,7 @@ public class GameManager : Singleton<GameManager>
             {
                 DataManager.Instance.SaveBestScore(totalScore);
             }
-            EventManager<int>.Instance.TriggerEvent("onGameover", bestScore);
+            EventManagerOneParam<int>.Instance.TriggerEvent("onGameover", bestScore);
 
 
 
@@ -151,12 +151,12 @@ public class GameManager : Singleton<GameManager>
         seaCoroutine = null;
     }
 
-    public void RestarGame(bool restart)
+    public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    private void StartGame(bool start)
+    private void StartGame()
     {
         currentState = GameState.PLAYING;
     }

@@ -42,6 +42,6 @@ public class MainmenuUI : MonoBehaviour
             yield return null;
         }
         gameObject.SetActive(false);
-        EventManager<bool>.Instance.TriggerEvent("onGameStarted", true);
+        EventManager.Instance.TriggerEvent("onGameStarted");
     }
 }

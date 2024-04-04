@@ -22,20 +22,20 @@ public class UIManager : Singleton<UIManager>
 
     private void OnEnable()
     {
-        EventManager<bool>.Instance.StartListening("onGamePaused", PauseGame);
-        EventManager<bool>.Instance.StartListening("onGameStarted", SelectInputField);
-        EventManager<int>.Instance.StartListening("onGameover", Gameover);
-        EventManager<int>.Instance.StartListening("onTearPopped", ManageScore);
-        EventManager<ScriptableGameDifficulty>.Instance.StartListening("onDifficultyChanged", DifficultyText);
+        EventManagerOneParam<bool>.Instance.StartListening("onGamePaused", PauseGame);
+        EventManager.Instance.StartListening("onGameStarted", SelectInputField);
+        EventManagerOneParam<int>.Instance.StartListening("onGameover", Gameover);
+        EventManagerOneParam<int>.Instance.StartListening("onTearPopped", ManageScore);
+        EventManagerOneParam<ScriptableGameDifficulty>.Instance.StartListening("onDifficultyChanged", DifficultyText);
     }
 
     private void OnDisable()
     {
-        EventManager<bool>.Instance.StopListening("onGamePaused", PauseGame);
-        EventManager<bool>.Instance.StopListening("onGameStarted", SelectInputField);
-        EventManager<int>.Instance.StopListening("onGameover", Gameover);
-        EventManager<int>.Instance.StopListening("onTearPopped", ManageScore);
-        EventManager<ScriptableGameDifficulty>.Instance.StopListening("onDifficultyChanged", DifficultyText);
+        EventManagerOneParam<bool>.Instance.StopListening("onGamePaused", PauseGame);
+        EventManager.Instance.StopListening("onGameStarted", SelectInputField);
+        EventManagerOneParam<int>.Instance.StopListening("onGameover", Gameover);
+        EventManagerOneParam<int>.Instance.StopListening("onTearPopped", ManageScore);
+        EventManagerOneParam<ScriptableGameDifficulty>.Instance.StopListening("onDifficultyChanged", DifficultyText);
     }
 
     // Start is called before the first frame update
@@ -74,7 +74,7 @@ public class UIManager : Singleton<UIManager>
     {
         string answer = inputText.text;
         inputText.text = "";
-        EventManager<string>.Instance.TriggerEvent("onInput", answer);
+        EventManagerOneParam<string>.Instance.TriggerEvent("onInput", answer);
         inputText.ActivateInputField();
         inputText.Select();
     }
@@ -99,7 +99,7 @@ public class UIManager : Singleton<UIManager>
         gameoverPanel.GetComponent<GameOverUI>().StartFadeInAnimation(bestScore, totalScore);
     }
 
-    private void SelectInputField(bool select)
+    private void SelectInputField()
     {
         inputText.Select();
     }
@@ -124,7 +124,7 @@ public class UIManager : Singleton<UIManager>
             fadeoutPanel.color = new Color(0, 0, 0, newAlpha);
             yield return null;
         }
-        EventManager<bool>.Instance.TriggerEvent("onFadeOut", true);
+        EventManager.Instance.TriggerEvent("onFadeOut");
     }
 
     private IEnumerator FadeInCO()

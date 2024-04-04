@@ -23,16 +23,16 @@ public class TearManager : Singleton<TearManager>
 
     private void OnEnable()
     {
-        EventManager<string>.Instance.StartListening("onInput", CheckAnswer);
-        EventManager<ScriptableGameDifficulty>.Instance.StartListening("onDifficultyChanged", ChangeDifficulty);
-        EventManager<Tear>.Instance.StartListening("onTearLanded", TearLanded);
+        EventManagerOneParam<string>.Instance.StartListening("onInput", CheckAnswer);
+        EventManagerOneParam<ScriptableGameDifficulty>.Instance.StartListening("onDifficultyChanged", ChangeDifficulty);
+        EventManagerOneParam<Tear>.Instance.StartListening("onTearLanded", TearLanded);
     }
 
     private void OnDisable()
     {
-        EventManager<string>.Instance.StopListening("onInput", CheckAnswer);
-        EventManager<ScriptableGameDifficulty>.Instance.StopListening("onDifficultyChanged", ChangeDifficulty);
-        EventManager<Tear>.Instance.StopListening("onTearLanded", TearLanded);
+        EventManagerOneParam<string>.Instance.StopListening("onInput", CheckAnswer);
+        EventManagerOneParam<ScriptableGameDifficulty>.Instance.StopListening("onDifficultyChanged", ChangeDifficulty);
+        EventManagerOneParam<Tear>.Instance.StopListening("onTearLanded", TearLanded);
     }
 
     // Start is called before the first frame update
